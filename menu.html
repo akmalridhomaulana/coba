@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <title>Menu Utama</title>
+    <style>
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: Arial, Helvetica, sans-serif;
+    }
+
+    body {
+       background: 
+        linear-gradient(135deg, #000000 0%, #1a0000 50%, #000000 100%);
+        background-size: 90% 90%;
+        min-height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        color: white;
+        animation: gradientBG 6s ease infinite;
+    }
+
+    @keyframes gradientBG {
+        0% {
+            background-position: 0% 0%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 0%;
+        }
+    }
+
+    .judul {
+        font-size: clamp(3rem, 10vw, 6rem);
+    font-weight: bold;
+    text-align: center;
+    line-height: 1.2;
+    margin-bottom: 10px;
+        
+        /* animasi */
+        background: linear-gradient(
+            45deg, 
+            #0a0a0a, #ff0000, #8b0000, #b3b3b3, 
+            #b3b3b3, #8b0000, #ff0000, #0a0a0a, #ff0000
+        );
+        background-size: 200% auto;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+    animation: backgroundAnimation 8s infinite linear;
+    }
+
+    @keyframes backgroundAnimation {
+        0% {
+            background-position: 0% 50%;
+        }
+        50% {
+            background-position: 100% 50%;
+        }
+        100% {
+            background-position: 0% 50%;
+        }
+    }
+
+
+    .container {
+        text-align: center;
+        width: 90%;
+        max-width: 800px;
+    }
+
+    header {
+        margin-top: 0.5rem;
+    }
+
+    header h1 {
+        font-size: 3rem;
+        font-weight: 600;
+        margin-bottom: 20px;
+        letter-spacing: 2px;
+        text-transform: uppercase;
+    }
+
+    header p {
+        font-size: 1rem;
+        margin-bottom: 40px;
+        color: #ccc;
+    }
+
+    header p span {
+        color: #ff3131;
+        font-weight: bold;
+    }
+
+    /* pengaturan menu */
+    .menu {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 40px;
+    }
+
+    .kartu {
+        background: rgba(255, 255, 255, 0.05);
+        border: 2px solid #ff3131;
+        border-radius: 15px;
+        padding: 30px;
+        text-decoration: none;
+        color: white;
+        box-shadow: 0.5rem 0.5rem 0.5rem #a51010;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .kartu span {
+        font-size: 1.2rem;
+        font-weight: 500;
+    }
+
+    .kartu:hover {
+        background: #ff3131;
+        box-shadow: none;
+        transform: translateY(-10px);
+    }
+
+    .kartu:hover .ikon {
+        color: rgb(255, 255, 255);
+        transform: scale(1.1);
+    }
+
+    .ikon {
+        font-size: 3rem;
+        margin-bottom: 15px;
+        color: #ff3131;
+        transition: transform 0.3s ease;
+    }
+
+    /* refonsif di hp */
+    @media (max-width: 600px) {
+    body {
+        padding: 30px;
+    }
+    
+    .container {
+        width: 100%;
+    }
+
+    header p {
+        font-size: 0.9rem;
+        margin-bottom: 30px;
+    }
+
+    .menu {
+        grid-template-columns: 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
+    }
+
+    .kartu {
+        padding: 20px;
+    }
+
+    .ikon {
+        font-size: 2.5rem;
+    }
+}
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1 class="judul">Menu Utama</h1>
+            <p>Selamat datang kawan di web buatan <span>Akmal</span>. Selamat mencoba ya!</p>
+        </header>
+
+        <div class="menu">
+            <a href="Profile.html" class="kartu">
+                <div class="ikon">
+                    <i class="fa-solid fa-person-military-rifle"></i>
+                </div>
+                <span>Profil Akmal</span>
+            </a>
+
+            <a href="kalkulator.html" class="kartu">
+                <div class="ikon">
+                    <i class="fas fa-calculator"></i>
+                </div>
+                <span>Kalkulator</span>
+            </a>
+
+            <a href="klik.html" class="kartu">
+                <div class="ikon">
+                    <i class="fa-solid fa-hand-pointer"></i>
+                </div>
+                <span>Gem Klik</span>
+            </a>
+
+            <a href="gem.html" class="kartu">
+                <div class="ikon">
+                    <i class="fas fa-gamepad"></i>
+                </div>
+                <span>Tic-Tac-Toe</span>
+            </a>
+        </div>
+    </div>
+</body>
+</html>

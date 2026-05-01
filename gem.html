@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tic-Tac-Toe</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" integrity="sha512-2SwdPD6INVrV/lHTZbO2nodKhrnDdJK9/kg2XD1r9uGqPo1cUbujc+IYdlYdEErWNu69gVcYgdxlmVmzTWnetw==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        * {
+            margin: 0; padding: 0; box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background: radial-gradient(circle at center, #2c0000 0%, #000000 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            overflow: hidden;
+            touch-action: manipulation;
+        }
+
+        /* Tombol Keluar */
+        .back-btn {
+            position: absolute; top: 20px; left: 20px;
+            color: #ff3131; text-decoration: none; font-weight: bold;
+            transition: 0.3s; z-index: 100;
+        }
+        .back-btn:hover { color: white; }
+
+        #status-text {
+            font-size: 1.2rem;
+            margin-bottom: 20px;
+            height: 30px;
+            color: #ff3131;
+            font-weight: bold;
+            text-align: center;
+        }
+
+        /* Avatar Section */
+        .players-container {
+            display: flex;
+            gap: 30px;
+            margin-bottom: 25px;
+        }
+
+        .player-card {
+            text-align: center;
+            padding: 15px;
+            border-radius: 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 2px solid transparent;
+            transition: 0.4s;
+            width: 110px;
+        }
+
+        .player-card i { 
+            font-size: 2.5rem; 
+            margin-bottom: 15px;
+            margin-left: 13px; 
+            display: block; 
+        }
+
+        .active {
+            border-color: #ff3131;
+            background: rgba(255, 49, 49, 0.15);
+            transform: scale(1.05);
+            box-shadow: 0 0 15px rgba(255, 49, 49, 0.3);
+        }
+
+        /* Papan Game */
+        .game-area {
+            position: relative;
+            background: #ff3131;
+            border-radius: 12px;
+            overflow: hidden; /
+        }
+
+        .board {
+            display: grid;
+            grid-template-columns: repeat(3, 90px);
+            grid-template-rows: repeat(3, 90px);
+            gap: 10px;
+            background: #ff3131;
+            padding: 10px;
+            border-radius: 12px;
+        }
+
+        .cell {
+            background: #0a0a0a;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            font-weight: bold;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.2s;
+        }
+
+        .cell:hover { background: #151515; }
+        .cell.x { color: #ff3131; }
+        .cell.o { color: white; }
+
+        /* Garis Coretan*/
+        .strike {
+            position: absolute;
+            background-color: white;
+            box-shadow: 0 0 15px #ff3131, 0 0 5px white;
+            display: none; /* Sembunyi dulu */
+            z-index: 10;
+            border-radius: 10px;
+            transition: all 0.5s ease;
+        }
+
+        /* supaya garis horizontal gak keluar kotak */
+        .strike-row-1 { display: block; width: 90%; height: 6px; left: 5%; top: 16.5%; }
+        .strike-row-2 { display: block; width: 90%; height: 6px; left: 5%; top: 49%; }
+        .strike-row-3 { display: block; width: 90%; height: 6px; left: 5%; top: 81.5%; }
+
+        /* kolom biar presisi */
+        .strike-col-1 { display: block; width: 6px; height: 90%; top: 5%; left: 16.5%; }
+        .strike-col-2 { display: block; width: 6px; height: 90%; top: 5%; left: 49%; }
+        .strike-col-3 { display: block; width: 6px; height: 90%; top: 5%; left: 81.5%; }
+
+        /* Bagian diagonal biar gak tembus keluar */
+        .strike-diag-1 { display: block; width: 110%; height: 6px; top: 49%; left: -5%; transform: rotate(45deg); }
+        .strike-diag-2 { display: block; width: 110%; height: 6px; top: 49%; left: -5%; transform: rotate(-45deg); }
+
+        /* Animasi Menang Player */
+        .winner-anim {
+            animation: winnerGlow 0.6s infinite alternate;
+            border-color: gold !important;
+        }
+
+        @keyframes winnerGlow {
+            from { transform: scale(1.05); box-shadow: 0 0 10px #ff3131; }
+            to { transform: scale(1.15); box-shadow: 0 0 30px gold; }
+        }
+
+        .reset-btn {
+            margin-top: 25px;
+            padding: 12px 30px;
+            background: transparent;
+            color: white;
+            border: 2px solid #ff3131;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: 0.3s;
+        }
+        .reset-btn:hover { background: #ff3131; box-shadow: 0 0 15px #ff3131; }
+
+        /* reponsif */
+@media (max-width: 600px) {
+    body {
+        padding: 10px;
+        justify-content: flex-start;
+        padding-top: 60px;
+    }
+
+    #status-text {
+        font-size: 1rem;
+        margin-bottom: 15px;
+    }
+
+    .players-container {
+        gap: 15px;
+        margin-bottom: 20px;
+    }
+
+    .player-card {
+        width: 90px;
+        padding: 10px;
+    }
+
+    .player-card i {
+        font-size: 2rem;
+        margin-left: 13px;
+        margin-bottom: 15px;
+    }
+
+    .player-card span {
+        font-size: 0.8rem;
+    }
+
+    .board {
+        grid-template-columns: repeat(3, 85px);
+        grid-template-rows: repeat(3, 85px);
+        gap: 8px;
+        padding: 8px;
+    }
+
+    .cell {
+        font-size: 2rem;
+    }
+
+    .reset-btn {
+        width: 80%;
+        padding: 10px;
+        font-size: 0.9rem;
+    }
+
+    /* Penyesuaian Garis Coret di HP */
+    .strike-row-1 { top: 16%; }
+    .strike-row-2 { top: 49%; }
+    .strike-row-3 { top: 82%; }
+}
+
+/* Khusus HP sangat kecil */
+@media (max-width: 360px) {
+    .board {
+        grid-template-columns: repeat(3, 75px);
+        grid-template-rows: repeat(3, 75px);
+    }
+    
+    .player-card {
+        width: 80px;
+    }
+}
+    </style>
+</head>
+<body>
+    <a href="menu.html" class="back-btn"><i class="fas fa-arrow-left"></i> kembali</a>
+
+    <div id="status-text">PLAYER 1 MULAI (X)</div>
+
+    <div class="players-container">
+        <div class="player-card active" id="p1-card">
+            <i class="fas fa-user-ninja"></i>
+            <span>P1 (X)</span>
+        </div>
+        <div class="player-card" id="p2-card">
+            <i class="fas fa-user-astronaut"></i>
+            <span>P2 (O)</span>
+        </div>
+    </div>
+
+    <div class="game-area">
+        <div class="board" id="board">
+            <div class="cell" data-index="0"></div>
+            <div class="cell" data-index="1"></div>
+            <div class="cell" data-index="2"></div>
+            <div class="cell" data-index="3"></div>
+            <div class="cell" data-index="4"></div>
+            <div class="cell" data-index="5"></div>
+            <div class="cell" data-index="6"></div>
+            <div class="cell" data-index="7"></div>
+            <div class="cell" data-index="8"></div>
+        </div>
+        <div id="strike" class="strike"></div>
+    </div>
+
+    <button class="reset-btn" onclick="resetGame()">Main Lagi</button>
+
+    <script>
+        const cells = document.querySelectorAll('.cell');
+        const statusText = document.getElementById('status-text');
+        const p1Card = document.getElementById('p1-card');
+        const p2Card = document.getElementById('p2-card');
+        const strike = document.getElementById('strike');
+
+        let currentPlayer = 'X';
+        let gameState = ["", "", "", "", "", "", "", "", ""];
+        let gameActive = true;
+
+        // Definisi Kemenangan + Class Garis Coretnya
+        const winningConditions = [
+            { combo: [0, 1, 2], strikeClass: 'strike-row-1' },
+            { combo: [3, 4, 5], strikeClass: 'strike-row-2' },
+            { combo: [6, 7, 8], strikeClass: 'strike-row-3' },
+            { combo: [0, 3, 6], strikeClass: 'strike-col-1' },
+            { combo: [1, 4, 7], strikeClass: 'strike-col-2' },
+            { combo: [2, 5, 8], strikeClass: 'strike-col-3' },
+            { combo: [0, 4, 8], strikeClass: 'strike-diag-1' },
+            { combo: [2, 4, 6], strikeClass: 'strike-diag-2' }
+        ];
+
+        function handleCellClick(e) {
+            const clickedCell = e.target;
+            const clickedIndex = parseInt(clickedCell.getAttribute('data-index'));
+
+            if (gameState[clickedIndex] !== "" || !gameActive) return;
+
+            gameState[clickedIndex] = currentPlayer;
+            clickedCell.innerText = currentPlayer;
+            clickedCell.classList.add(currentPlayer.toLowerCase());
+
+            checkResult();
+        }
+
+        function checkResult() {
+            let winData = null;
+
+            for (let i = 0; i < winningConditions.length; i++) {
+                const { combo, strikeClass } = winningConditions[i];
+                if (gameState[combo[0]] && 
+                    gameState[combo[0]] === gameState[combo[1]] && 
+                    gameState[combo[0]] === gameState[combo[2]]) {
+                    winData = winningConditions[i];
+                    break;
+                }
+            }
+
+            if (winData) {
+                statusText.innerText = `LUAR BIASA! PLAYER ${currentPlayer === 'X' ? '1' : '2'} MENANG! 🎉`;
+                gameActive = false;
+                
+                // Munculkan garis coret
+                strike.className = `strike ${winData.strikeClass}`;
+                
+                // Animasi Avatar
+                if (currentPlayer === 'X') p1Card.classList.add('winner-anim');
+                else p2Card.classList.add('winner-anim');
+                return;
+            }
+
+            if (!gameState.includes("")) {
+                statusText.innerText = "HASIL SERI! 🤝";
+                gameActive = false;
+                return;
+            }
+
+            currentPlayer = currentPlayer === 'X' ? 'O' : 'X';
+            statusText.innerText = `GILIRAN PLAYER ${currentPlayer === 'X' ? '1' : '2'} (${currentPlayer})`;
+            updateAvatar();
+        }
+
+        function updateAvatar() {
+            if (currentPlayer === 'X') {
+                p1Card.classList.add('active');
+                p2Card.classList.remove('active');
+            } else {
+                p2Card.classList.add('active');
+                p1Card.classList.remove('active');
+            }
+        }
+
+        function resetGame() {
+            currentPlayer = 'X';
+            gameState = ["", "", "", "", "", "", "", "", ""];
+            gameActive = true;
+            statusText.innerText = "PLAYER 1 MULAI (X)";
+            cells.forEach(cell => {
+                cell.innerText = "";
+                cell.classList.remove('x', 'o');
+            });
+            strike.className = "strike"; // Sembunyikan garis
+            p1Card.classList.remove('winner-anim');
+            p2Card.classList.remove('winner-anim');
+            updateAvatar();
+        }
+
+        cells.forEach(cell => cell.addEventListener('click', handleCellClick));
+    </script>
+</body>
+</html>
